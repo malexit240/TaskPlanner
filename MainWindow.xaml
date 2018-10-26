@@ -11,10 +11,14 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBox Grid.Column="0" x:Name="Tree" HorizontalAlignment="Left" Height="auto" Margin="10" TextWrapping="Wrap" VerticalAlignment="Top" Width="auto"/>
-        <TextBox x:Name="taskname" HorizontalAlignment="Left" Height="23" Margin="2.333,56,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Grid.Column="1"/>
-        <TextBox x:Name="parent_id" HorizontalAlignment="Left" Height="23" Margin="222.333,21,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Grid.Column="1"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="141.333,59,0,0" VerticalAlignment="Top" Width="75" Click="addTree_Click" Grid.Column="1"/>
-        <Button x:Name="Update" Content="Button" HorizontalAlignment="Left" Margin="47.333,245,0,0" VerticalAlignment="Top" Width="75" Click="Update_Click" Grid.Column="1"/>
+        <TextBox Grid.Column="0" x:Name="Tree" HorizontalAlignment="Left" Height="auto" Margin="10" TextWrapping="Wrap" VerticalAlignment="Top" Width="1000"/>
+        <TextBox Grid.Column="1" x:Name="taskname" HorizontalAlignment="Left" Height="40" Margin="10" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="auto"/>
+        <TextBox x:Name="parent_id" HorizontalAlignment="Left" Height="40" Margin="10, 60" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="auto" Grid.Column="1"/>
+        <Button Content="Добавить" HorizontalAlignment="Left" Margin="10.333,105,0,0" VerticalAlignment="Top" Width="75" Click="addTree_Click" Grid.Column="1"/>
+        <Button x:Name="Update" Content="Обновить" HorizontalAlignment="Left" Margin="10.333,130,0,0" VerticalAlignment="Top" Width="75" Click="Update_Click" Grid.Column="1"/>
+        <TextBox x:Name="ID" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="10.333,164,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="Delete" Content="Удалить" Grid.Column="1" HorizontalAlignment="Left" Margin="10.333,192,0,0" VerticalAlignment="Top" Width="75" Click="Delete_Click"/>
+        <Button x:Name="Move" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="133.333,192,0,0" VerticalAlignment="Top" Width="75" Click="Move_Click"/>
+        <TextBox x:Name="nextID" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="135.333,164,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
     </Grid>
 </Window>

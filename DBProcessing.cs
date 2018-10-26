@@ -16,8 +16,6 @@ namespace TaskPlanner
         public DBProcessing()
         {
             //createDB();
-            
-
         }
 
         public void connectTree(TreeNode root)
@@ -67,30 +65,6 @@ namespace TaskPlanner
             }
         }
 
-        private void getTasksFromParent(int parent_id)
-        {
-
-            SQLiteConnection conn = new SQLiteConnection("Data Source=Database.db; Version=3;");
-            conn.Open();
-
-            if (conn.State == System.Data.ConnectionState.Open)
-            {
-                SQLiteCommand cmd = conn.CreateCommand();
-                string sql_command = $"SELECT id, task, parent_id FROM TASKS WHERE parent_id = {parent_id};";
-                cmd.CommandText = sql_command;
-
-                SQLiteDataReader r = cmd.ExecuteReader();
-
-                while (r.Read())
-                {
-                    // result.Add(r["id"] + " " + r["task"] + " " + r["parent_id"]);
-                }
-                r.Close();
-                conn.Dispose();
-            }
-
-        }
-
         public void fillTree(TreeNode root)
         {
             SQLiteConnection conn = new SQLiteConnection("Data Source=Database.db; Version=3;");
@@ -122,9 +96,45 @@ namespace TaskPlanner
             }
         }
 
+        internal void moveNode(int id, int dst)
+        {
+            SQLiteConnection conn = new SQLiteConnection("Data Source=Database.db; Version=3;");
+            conn.Open();
+
+            if (conn.State == System.Data.ConnectionState.Open)
+            {
+                SQLiteCommand cmd = conn.CreateCommand();
+                string sql_command = $"UPDATE TASKS SET parent_id={dst} WHERE id = {id}";
+                cmd.CommandText = sql_command;
+                cmd.ExecuteNonQuery();
+                conn.Dispose();
+            }
+        }
+
+        public void deleteNode(List<TreeNode> tn)
+        {
+                for (int i = tn.Count-1; i >= 0; i--)
+                    deleteOneNode(tn[i].Id);
+        }
+
+        private void deleteOneNode(int id)
+        {
+            SQLiteConnection conn = new SQLiteConnection("Data Source=Database.db; Version=3;");
+            conn.Open();
+
+            if (conn.State == System.Data.ConnectionState.Open)
+            {
+                SQLiteCommand cmd = conn.CreateCommand();
+                string sql_command = $"DELETE FROM TASKS WHERE id = {id}";
+
+                cmd.CommandText = sql_command;
+                cmd.ExecuteNonQuery();
+                conn.Dispose();
+            }
+        }
+
         public int getIdByNameAndParent(string taskname,int parent_id)
         {
-            
 
             SQLiteConnection conn = new SQLiteConnection("Data Source=Database.db; Version=3;");
             conn.Open();
@@ -164,29 +174,55 @@ namespace TaskPlanner
             this.child = new List<TreeNode>();
         }
 
-
-
         public void addChild(TreeNode child)
         {
             this.child.Add(child);
         }
 
+        public List<TreeNode> getTaskList()
+        {
+            List<TreeNode> result=new List<TreeNode>();
+
+            result.Add(this);
+            for (int i = 0; i < child.Count; i++)
+                result.AddRange(child[i].getTaskList());
+
+            return result;
+        }
+
         public TreeNode getNodeById(int id, bool isLocal = false)
         {
-            if (this.Id == id) return this;
-
-            TreeNode result;
-            for (int i = 0; i < child.Count; i++)
+            List<TreeNode> tn = getTaskList();
+            for (int i = 0; i < tn.Count; i++)
             {
-                if (child[i].Id == id) return child[i];
-                if (!isLocal)
-                {
-                    result = child[i].getNodeById(id);
-                    if (result != null) return result;
-                }
+                if (isLocal && tn[i].parent.Id != this.Id) continue;
+                if (tn[i].Id == id) return tn[i];
             }
 
             return null;
+        }
+
+        public void deleteNode(int id)
+        {
+            for (int i = 0; i < child.Count; i++)
+            {
+                
+                if(id==child[i].Id)
+                {
+                    List<TreeNode> tn = child[i].getTaskList();
+                    for (int j = 0; j < tn.Count; j++)
+                    {
+                        tn[i] = null;
+                    }
+                    child.Remove(child[i]);
+                    break;
+                }
+            }
+        }
+
+        public void foregetChild(TreeNode tn)
+        {
+            child.Remove(tn);
         }
     }
 }

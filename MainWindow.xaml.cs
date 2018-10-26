@@ -43,7 +43,7 @@ namespace TaskPlanner
 
         private string addText(TreeNode root,int deep)
         {
-            string result=""+'\n';
+            string result="\n";
             for (int i = 0; i < deep; i++)
             {
                 result += '\t';
@@ -53,7 +53,7 @@ namespace TaskPlanner
             {
                 result += addText(root.child[i], deep + 1);
             }
-            result += '\n';
+
             return result;
         }
 
@@ -63,6 +63,16 @@ namespace TaskPlanner
             string tree = addText(root, 0);
 
             Tree.Text = tree;
+        }
+
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.deleteNode(Convert.ToInt32( ID.Text));
+        }
+
+        private void Move_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.moveNode(Convert.ToInt32(ID.Text),Convert.ToInt32(nextID.Text));
         }
     }
 
@@ -87,6 +97,26 @@ namespace TaskPlanner
             parent.addChild(new TreeNode(parent, id, taskname));
         }
 
+        public static void deleteNode(int id)
+        {
+            TreeNode self = root.getNodeById(id);
+            List<TreeNode> tn = self.getTaskList();
+            db.deleteNode(tn);
+            self.parent.deleteNode(id);
+
+        }
+
+        internal static void moveNode(int id,int dst)
+        {
+            db.moveNode(id, dst);
+
+            TreeNode tn = root.getNodeById(id);
+            TreeNode parent_dst = root.getNodeById(dst);
+            parent_dst.addChild(tn);
+            tn.parent.foregetChild(tn);
+            tn.parent = parent_dst;
+
+        }
     }
 
    
